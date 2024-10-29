@@ -65,7 +65,7 @@ Git
 
 Clone the repository
 
-bashCopygit clone https://github.com/your-username/banking-application.git
+bashCopygit clone https://github.com/IBNESSAYEH/ebanky.git
 cd banking-application
 
 Configure database

@@ -2,7 +2,7 @@ package com.YouCode.ebanky.responses;
 
 public class UserResponse {
 
-    private String id;
+    private String userId;
     private String firstName;
     private String lastName;
     private String email;
@@ -11,18 +11,18 @@ public class UserResponse {
     }
 
     public UserResponse(String id, String firstName, String lastName, String email) {
-        this.id = id;
+        this.userId = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {
