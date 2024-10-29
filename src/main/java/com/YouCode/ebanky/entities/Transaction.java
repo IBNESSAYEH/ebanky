@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class TransactionEntity {
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,11 +19,11 @@ public class TransactionEntity {
 
     @ManyToOne
     @JoinColumn(name = "source_account_id")
-    private AccountEntity sourceAccount;
+    private Account sourceAccount;
 
     @ManyToOne
     @JoinColumn(name = "destination_account_id")
-    private AccountEntity destinationAccount;
+    private Account destinationAccount;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;

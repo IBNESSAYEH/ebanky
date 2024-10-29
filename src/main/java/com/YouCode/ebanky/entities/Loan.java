@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class LoanEntity {
+public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,7 +17,7 @@ public class LoanEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 
     private boolean approved;
 

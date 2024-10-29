@@ -1,10 +1,10 @@
 package com.YouCode.ebanky.repositories;
 
-import com.YouCode.ebanky.entities.UserEntity;
+import com.YouCode.ebanky.entities.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends CrudRepository<UserEntity, Long> {
-    UserEntity findByEmail(String email);
+public interface UserRepository extends CrudRepository<User, Long> {
+    User findByEmail(String email);
 }

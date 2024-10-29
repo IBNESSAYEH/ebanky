@@ -1,51 +1,26 @@
 package com.YouCode.ebanky.responses;
 
+import com.YouCode.ebanky.entities.Account;
+import com.YouCode.ebanky.entities.Invoice;
+import com.YouCode.ebanky.entities.Loan;
+import com.YouCode.ebanky.entities.enums.Role;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
 public class UserResponse {
 
     private String userId;
     private String firstName;
     private String lastName;
     private String email;
+    private int age;
+    private Double monthlyIncome;
+    private int creditScore;
+    private Role role;
+    private List<Account> accounts;
+    private List<Invoice> invoices;
+    private List<Loan> loans;
 
-    public UserResponse() {
-    }
-
-    public UserResponse(String id, String firstName, String lastName, String email) {
-        this.userId = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

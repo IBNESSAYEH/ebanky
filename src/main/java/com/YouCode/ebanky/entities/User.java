@@ -10,14 +10,14 @@ import java.util.List;
 
 @Entity(name = "users")
 @Data
-public class UserEntity implements Serializable {
+public class User implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -8495478474052046335L;
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String userId;
@@ -53,13 +53,13 @@ public class UserEntity implements Serializable {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<AccountEntity> accounts;
+    private List<Account> accounts;
 
     @OneToMany(mappedBy = "user")
-    private List<InvoiceEntity> invoices;
+    private List<Invoice> invoices;
 
     @OneToMany(mappedBy = "user")
-    private List<LoanEntity> loans;
+    private List<Loan> loans;
 
     public void register() {
         return;

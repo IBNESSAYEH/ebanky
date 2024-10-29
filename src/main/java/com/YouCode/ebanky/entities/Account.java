@@ -5,13 +5,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
-public class AccountEntity {
+public class Account {
     @Id
-    private UUID id;
+    private Long id;
 
     @Column(unique = true)
     private String account_number;
@@ -25,13 +24,13 @@ public class AccountEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 
     @OneToMany(mappedBy = "sourceAccount")
-    private List<TransactionEntity> outgoingTransactions;
+    private List<Transaction> outgoingTransactions;
 
     @OneToMany(mappedBy = "destinationAccount")
-    private List<TransactionEntity> incomingTransactions;
+    private List<Transaction> incomingTransactions;
 
     public void deposit(Double amount) {
         this.balance += amount;
@@ -45,6 +44,6 @@ public class AccountEntity {
         }
     }
 
-    
+
 }
 

@@ -1,6 +1,6 @@
 package com.YouCode.ebanky.services.implementation;
 
-import com.YouCode.ebanky.entities.UserEntity;
+import com.YouCode.ebanky.entities.User;
 import com.YouCode.ebanky.repositories.UserRepository;
 import com.YouCode.ebanky.services.UserService;
 import com.YouCode.ebanky.shared.Utils;
@@ -20,13 +20,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        UserEntity checkUserByEmail = userRepository.findByEmail(userDto.getEmail());
+        User checkUserByEmail = userRepository.findByEmail(userDto.getEmail());
         if (checkUserByEmail != null) throw new RuntimeException("User already exists");
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(userDto, userEntity);
-        userEntity.setEncryptedPassword("user Password");
-        userEntity.setUserId(util.generateStringId(32));
-        UserEntity createdUser = userRepository.save(userEntity);
+        User user = new User();
+        BeanUtils.copyProperties(userDto, user);
+        user.setEncryptedPassword("user Password");
+        user.setUserId(util.generateStringId(32));
+        User createdUser = userRepository.save(user);
         UserDto createdUserDto = new UserDto();
         BeanUtils.copyProperties(createdUser, createdUserDto);
 
