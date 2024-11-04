@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+@Entity(name = "accounts")
 @Data
 public class Account {
     @Id
@@ -26,11 +26,11 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "sourceAccount")
-    private List<Transaction> outgoingTransactions;
-
-    @OneToMany(mappedBy = "destinationAccount")
-    private List<Transaction> incomingTransactions;
+//    @OneToMany(mappedBy = "sourceAccount")
+//    private List<Transaction> outgoingTransactions;
+//
+//    @OneToMany(mappedBy = "destinationAccount")
+//    private List<Transaction> incomingTransactions;
 
     public void deposit(Double amount) {
         this.balance += amount;

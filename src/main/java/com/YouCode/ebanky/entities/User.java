@@ -8,8 +8,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity(name = "users")
+@Entity
 @Data
+@Table(name = "users")
 public class User implements Serializable {
 
     @Serial
@@ -49,17 +50,17 @@ public class User implements Serializable {
     @Column(nullable = true)
     private int creditScore;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
+//    @Enumerated(EnumType.STRING)
+//    private Role role;
+//
     @OneToMany(mappedBy = "user")
     private List<Account> accounts;
 
-    @OneToMany(mappedBy = "user")
-    private List<Invoice> invoices;
-
-    @OneToMany(mappedBy = "user")
-    private List<Loan> loans;
+//    @OneToMany(mappedBy = "user")
+//    private List<Invoice> invoices;
+//
+//    @OneToMany(mappedBy = "user")
+//    private List<Loan> loans;
 
     public void register() {
         return;

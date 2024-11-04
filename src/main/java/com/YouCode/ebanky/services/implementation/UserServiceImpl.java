@@ -32,4 +32,35 @@ public class UserServiceImpl implements UserService {
 
         return createdUserDto;
     }
+
+    @Override
+    public UserDto findUserByUserId(String userId){
+        User user = userRepository.findByUserId(userId);
+        if(user == null) throw new RuntimeException("User not found");
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(user, userDto);
+        return userDto;
+    }
+
+    @Override
+    public UserDto updateUser(String userId, UserDto userDto) {
+        User user = userRepository.findByUserId(userId);
+        if(user == null) throw new RuntimeException("User not found");
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setAge(userDto.getAge());
+        user.setMonthlyIncome(userDto.getMonthlyIncome());
+        user.setCreditScore(userDto.getCreditScore());
+        User updatedUser = userRepository.save(user);
+        UserDto updatedUserDto = new UserDto();
+        BeanUtils.copyProperties(updatedUser, updatedUserDto);
+        return updatedUserDto;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if(user == null) throw new RuntimeException("User not found");
+        userRepository.delete(user);
+    }
 }

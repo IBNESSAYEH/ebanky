@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: ebanky
+  datasource:
+    url: jdbc:postgresql://localhost:5433/ebanky
+    username: abdo
+    password: abdo654321
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: classpath:/db/changelog/app-changelog.xml
+    default-schema: liquibase_db
+
+
+
+
