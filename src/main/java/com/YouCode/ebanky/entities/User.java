@@ -2,14 +2,14 @@ package com.YouCode.ebanky.entities;
 
 import com.YouCode.ebanky.entities.enums.Role;
 import jakarta.persistence.*;
-import lombok.Data;
+
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Data
+
 @Table(name = "users")
 public class User implements Serializable {
 
@@ -17,7 +17,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = -8495478474052046335L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -53,8 +53,8 @@ public class User implements Serializable {
 //    @Enumerated(EnumType.STRING)
 //    private Role role;
 //
-    @OneToMany(mappedBy = "user")
-    private List<Account> accounts;
+//    @OneToMany(mappedBy = "user")
+//    private List<Account> accounts;
 
 //    @OneToMany(mappedBy = "user")
 //    private List<Invoice> invoices;
@@ -69,5 +69,94 @@ public class User implements Serializable {
     public boolean login() {
 
         return false;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
+
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    public String getEmailVerificationToken() {
+        return emailVerificationToken;
+    }
+
+    public void setEmailVerificationToken(String emailVerificationToken) {
+        this.emailVerificationToken = emailVerificationToken;
+    }
+
+    public Boolean getEmailVerificationStatus() {
+        return emailVerificationStatus;
+    }
+
+    public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
+        this.emailVerificationStatus = emailVerificationStatus;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public Double getMonthlyIncome() {
+        return monthlyIncome;
+    }
+
+    public void setMonthlyIncome(Double monthlyIncome) {
+        this.monthlyIncome = monthlyIncome;
+    }
+
+    public int getCreditScore() {
+        return creditScore;
+    }
+
+    public void setCreditScore(int creditScore) {
+        this.creditScore = creditScore;
     }
 }

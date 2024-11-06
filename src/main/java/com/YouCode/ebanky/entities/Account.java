@@ -2,12 +2,12 @@ package com.YouCode.ebanky.entities;
 
 import com.YouCode.ebanky.entities.enums.AccountStatus;
 import jakarta.persistence.*;
-import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "accounts")
-@Data
+
 public class Account {
     @Id
     private Long id;
@@ -22,9 +22,9 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private User user;
 
 //    @OneToMany(mappedBy = "sourceAccount")
 //    private List<Transaction> outgoingTransactions;
@@ -44,6 +44,44 @@ public class Account {
         }
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getAccount_number() {
+        return account_number;
+    }
+
+    public void setAccount_number(String account_number) {
+        this.account_number = account_number;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
+    }
+
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
 }
 
