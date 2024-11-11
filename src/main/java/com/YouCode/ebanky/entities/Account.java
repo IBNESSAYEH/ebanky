@@ -19,6 +19,18 @@ public class Account {
     private Double balance;
     @Column(nullable = false)
     private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private User user;
+
+//    @OneToMany(mappedBy = "sourceAccount")
+//    private List<Transaction> outgoingTransactions;
+//
+//    @OneToMany(mappedBy = "destinationAccount")
+//    private List<Transaction> incomingTransactions;
 
     public String getAccountNumber() {
         return accountNumber;
@@ -36,18 +48,7 @@ public class Account {
         this.createdAt = createdAt;
     }
 
-    @Enumerated(EnumType.STRING)
-    private AccountStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "users_id")
-    private User user;
-
-//    @OneToMany(mappedBy = "sourceAccount")
-//    private List<Transaction> outgoingTransactions;
-//
-//    @OneToMany(mappedBy = "destinationAccount")
-//    private List<Transaction> incomingTransactions;
 
     public void deposit(Double amount) {
         this.balance += amount;

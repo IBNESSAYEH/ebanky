@@ -2,6 +2,7 @@ package com.YouCode.ebanky.services.implementation;
 
 
 import com.YouCode.ebanky.entities.Account;
+import com.YouCode.ebanky.entities.enums.AccountStatus;
 import com.YouCode.ebanky.mappers.AccountMapper;
 import com.YouCode.ebanky.repositories.AccountRepository;
 import com.YouCode.ebanky.repositories.UserRepository;
@@ -28,9 +29,10 @@ public class AccountServiceImpl implements AccountService {
 
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO) {
         Account account = accountMapper.toEntity(accountRequestDTO);
-        account.setUser(userRepository.findById(accountRequestDTO.getUserId()).orElseThrow(() -> new RuntimeException("User not found")));
+        account.setUser(userRepository.findById(accountRequestDTO.getId()).orElseThrow(() -> new RuntimeException("User not found")));
         account.setBalance(accountRequestDTO.getInitialBalance());
         account.setCreatedAt(LocalDateTime.now());
+        account.setStatus(AccountStatus.ACTIVE);
         Account savedAccount = accountRepository.save(account);
         return accountMapper.toResponseDTO(savedAccount);
     }
@@ -55,5 +57,21 @@ public class AccountServiceImpl implements AccountService {
     public void deleteAccount(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
         accountRepository.delete(account);
+    }
+
+    @Override
+    public AccountResponseDTO blockAccount(Long id,AccountRequestDTO accountRequestDTO) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        account.setStatus(AccountStatus.BLOCKED);
+        Account updatedAccount = accountRepository.save(account);
+        return accountMapper.toResponseDTO(updatedAccount);
+    }
+
+    @Override
+    public AccountResponseDTO activeAccount(Long id, AccountRequestDTO accountRequestDTO) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        account.setStatus(AccountStatus.ACTIVE);
+        Account updatedAccount = accountRepository.save(account);
+        return accountMapper.toResponseDTO(updatedAccount);
     }
 }

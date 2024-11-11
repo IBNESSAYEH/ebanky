@@ -18,4 +18,8 @@ public interface AccountService {
     public AccountResponseDTO updateAccount(Long id, AccountRequestDTO accountRequestDTO);
 
     public void deleteAccount(Long id);
+
+    AccountResponseDTO blockAccount(Long id,AccountRequestDTO accountRequestDTO);
+    AccountResponseDTO activeAccount(Long id,AccountRequestDTO accountRequestDTO);
+
 }

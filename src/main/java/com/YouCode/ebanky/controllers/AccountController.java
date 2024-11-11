@@ -42,4 +42,13 @@ public class AccountController {
     public void deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
     }
+
+    @PatchMapping
+    public AccountResponseDTO blockAccount(@PathVariable Long id, @RequestBody AccountRequestDTO accountRequestDTO) {
+        return accountService.blockAccount(id, accountRequestDTO);
+    }
+    @PatchMapping
+    public AccountResponseDTO activeAccount(@PathVariable Long id, @RequestBody AccountRequestDTO accountRequestDTO) {
+        return accountService.blockAccount(id, accountRequestDTO);
+    }
 }

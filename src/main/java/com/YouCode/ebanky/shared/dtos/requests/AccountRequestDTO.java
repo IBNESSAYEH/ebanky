@@ -1,19 +1,16 @@
 package com.YouCode.ebanky.shared.dtos.requests;
 
-import lombok.Data;
-import lombok.Builder;
-
 public class AccountRequestDTO {
-    private Long userId;
+    private Long id;
     private Double initialBalance;
     private String accountNumber;
 
-    public Long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getInitialBalance() {
