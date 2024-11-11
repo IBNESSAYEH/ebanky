@@ -10,21 +10,22 @@ import java.util.List;
 
 public class Account {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
-    private String account_number;
-
+    private String accountNumber;
+    @Column(nullable = false)
     private Double balance;
-
+    @Column(nullable = false)
     private LocalDateTime created_at;
 
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private User user;
 
 //    @OneToMany(mappedBy = "sourceAccount")
 //    private List<Transaction> outgoingTransactions;
@@ -44,20 +45,22 @@ public class Account {
         }
     }
 
-    public Long getId() {
-        return id;
+
+
+    public User getUser() {
+        return user;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getAccount_number() {
-        return account_number;
+        return accountNumber;
     }
 
     public void setAccount_number(String account_number) {
-        this.account_number = account_number;
+        this.accountNumber = account_number;
     }
 
     public Double getBalance() {

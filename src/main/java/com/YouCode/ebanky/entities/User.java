@@ -11,17 +11,14 @@ import java.util.List;
 @Entity
 
 @Table(name = "users")
-public class User implements Serializable {
+public class User {
 
-    @Serial
-    private static final long serialVersionUID = -8495478474052046335L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String userId;
+
 
     @Column(nullable = false, length = 50)
     private String firstName;
@@ -53,8 +50,8 @@ public class User implements Serializable {
 //    @Enumerated(EnumType.STRING)
 //    private Role role;
 //
-//    @OneToMany(mappedBy = "user")
-//    private List<Account> accounts;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Account> accounts;
 
 //    @OneToMany(mappedBy = "user")
 //    private List<Invoice> invoices;
@@ -71,6 +68,13 @@ public class User implements Serializable {
         return false;
     }
 
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
+    }
 
     public Long getId() {
         return id;
@@ -80,13 +84,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
-    }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public String getFirstName() {
         return firstName;

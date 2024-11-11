@@ -1,66 +1,56 @@
 package com.YouCode.ebanky.services.implementation;
 
+
 import com.YouCode.ebanky.entities.User;
+import com.YouCode.ebanky.mappers.UserMapper;
 import com.YouCode.ebanky.repositories.UserRepository;
 import com.YouCode.ebanky.services.UserService;
-import com.YouCode.ebanky.shared.Utils;
-import com.YouCode.ebanky.shared.dto.UserDto;
-import org.springframework.beans.BeanUtils;
+import com.YouCode.ebanky.shared.dtos.requests.UserRequestDTO;
+import com.YouCode.ebanky.shared.dtos.responses.UserResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UserServiceImpl implements UserService {
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserMapper userMapper;
 
-    @Autowired
-    Utils util;
-
-    @Override
-    public UserDto createUser(UserDto userDto) {
-        User checkUserByEmail = userRepository.findByEmail(userDto.getEmail());
-        if (checkUserByEmail != null) throw new RuntimeException("User already exists");
-        User user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        user.setEncryptedPassword("user Password");
-        user.setUserId(util.generateStringId(32));
-        User createdUser = userRepository.save(user);
-        UserDto createdUserDto = new UserDto();
-        BeanUtils.copyProperties(createdUser, createdUserDto);
-
-        return createdUserDto;
+    public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
+        User user = userMapper.toEntity(userRequestDTO);
+        user.setEncryptedPassword("aaaaa"); 
+        User savedUser = userRepository.save(user);
+        return userMapper.toResponseDTO(savedUser);
     }
 
-    @Override
-    public UserDto findUserByUserId(String userId){
-        User user = userRepository.findByUserId(userId);
-        if(user == null) throw new RuntimeException("User not found");
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(user, userDto);
-        return userDto;
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream().map(userMapper::toResponseDTO).collect(Collectors.toList());
     }
 
-    @Override
-    public UserDto updateUser(String userId, UserDto userDto) {
-        User user = userRepository.findByUserId(userId);
-        if(user == null) throw new RuntimeException("User not found");
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setAge(userDto.getAge());
-        user.setMonthlyIncome(userDto.getMonthlyIncome());
-        user.setCreditScore(userDto.getCreditScore());
+    public UserResponseDTO getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toResponseDTO(user);
+    }
+
+    public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setFirstName(userRequestDTO.getFirstName());
+        user.setLastName(userRequestDTO.getLastName());
+        user.setEmail(userRequestDTO.getEmail());
+        user.setAge(userRequestDTO.getAge());
+        user.setMonthlyIncome(userRequestDTO.getMonthlyIncome());
+        user.setCreditScore(userRequestDTO.getCreditScore());
         User updatedUser = userRepository.save(user);
-        UserDto updatedUserDto = new UserDto();
-        BeanUtils.copyProperties(updatedUser, updatedUserDto);
-        return updatedUserDto;
+        return userMapper.toResponseDTO(updatedUser);
     }
 
-    @Override
-    public void deleteUser(String userId) {
-        User user = userRepository.findByUserId(userId);
-        if(user == null) throw new RuntimeException("User not found");
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
     }
 }

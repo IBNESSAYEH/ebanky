@@ -1,28 +1,16 @@
-package com.YouCode.ebanky.requests;
-
-//import com.YouCode.ebanky.entities.Account;
-//import com.YouCode.ebanky.entities.Invoice;
-//import com.YouCode.ebanky.entities.Loan;
-import com.YouCode.ebanky.entities.enums.Role;
+package com.YouCode.ebanky.shared.dtos.requests;
 
 
-import java.util.List;
 
 
-public class UserRequest {
+public class UserRequestDTO {
     private String firstName;
     private String lastName;
-    private String password;
     private String email;
-
+    private String password;
     private int age;
     private Double monthlyIncome;
     private int creditScore;
-    private Role role;
-    private List<AccountRequest> accounts;
-//    private List<Invoice> invoices;
-//    private List<Loan> loans;
-
 
     public String getFirstName() {
         return firstName;
@@ -40,20 +28,20 @@ public class UserRequest {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getAge() {
@@ -79,20 +67,5 @@ public class UserRequest {
     public void setCreditScore(int creditScore) {
         this.creditScore = creditScore;
     }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public List<AccountRequest> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(List<AccountRequest> accounts) {
-        this.accounts = accounts;
-    }
 }
+
