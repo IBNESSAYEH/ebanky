@@ -47,9 +47,9 @@ public class User {
     @Column(nullable = true)
     private int creditScore;
 
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
-//
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Account> accounts;
 

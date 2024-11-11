@@ -11,6 +11,7 @@ import com.YouCode.ebanky.shared.dtos.responses.AccountResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountMapper.toEntity(accountRequestDTO);
         account.setUser(userRepository.findById(accountRequestDTO.getUserId()).orElseThrow(() -> new RuntimeException("User not found")));
         account.setBalance(accountRequestDTO.getInitialBalance());
+        account.setCreatedAt(LocalDateTime.now());
         Account savedAccount = accountRepository.save(account);
         return accountMapper.toResponseDTO(savedAccount);
     }

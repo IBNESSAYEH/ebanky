@@ -18,7 +18,23 @@ public class Account {
     @Column(nullable = false)
     private Double balance;
     @Column(nullable = false)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
@@ -71,13 +87,6 @@ public class Account {
         this.balance = balance;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
 
     public AccountStatus getStatus() {
         return status;
