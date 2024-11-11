@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         User user = userMapper.toEntity(userRequestDTO);
-        user.setEncryptedPassword("aaaaa"); 
+        user.setEncryptedPassword("aaaaa");
         User savedUser = userRepository.save(user);
         return userMapper.toResponseDTO(savedUser);
     }
