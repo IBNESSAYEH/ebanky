@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 public class TransactionResponseDTO {
     private Long id;
 
-   
+
     private TransactionType type;
     private Double amount;
 

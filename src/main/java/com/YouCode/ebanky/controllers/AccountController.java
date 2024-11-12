@@ -43,11 +43,11 @@ public class AccountController {
         accountService.deleteAccount(id);
     }
 
-    @PatchMapping
+    @PatchMapping("/{id}/block")
     public AccountResponseDTO blockAccount(@PathVariable Long id, @RequestBody AccountRequestDTO accountRequestDTO) {
         return accountService.blockAccount(id, accountRequestDTO);
     }
-    @PatchMapping
+    @PatchMapping("/{id}/activate")
     public AccountResponseDTO activeAccount(@PathVariable Long id, @RequestBody AccountRequestDTO accountRequestDTO) {
         return accountService.blockAccount(id, accountRequestDTO);
     }

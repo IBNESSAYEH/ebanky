@@ -30,6 +30,7 @@ public class UserRequestDTO {
     private Double monthlyIncome;
     private int creditScore;
 
+
     public String getFirstName() {
         return firstName;
     }

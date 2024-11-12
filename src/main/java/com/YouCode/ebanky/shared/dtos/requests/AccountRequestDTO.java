@@ -1,16 +1,16 @@
 package com.YouCode.ebanky.shared.dtos.requests;
 
 public class AccountRequestDTO {
-    private Long id;
+    private Long userId;
     private Double initialBalance;
     private String accountNumber;
 
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Double getInitialBalance() {

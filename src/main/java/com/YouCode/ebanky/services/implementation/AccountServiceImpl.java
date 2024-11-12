@@ -29,12 +29,15 @@ public class AccountServiceImpl implements AccountService {
 
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO) {
         Account account = accountMapper.toEntity(accountRequestDTO);
-        account.setUser(userRepository.findById(accountRequestDTO.getId()).orElseThrow(() -> new RuntimeException("User not found")));
+        account.setUser(userRepository.findById(accountRequestDTO.getUserId()).orElseThrow(() -> new RuntimeException("User not found")));
+
         account.setBalance(accountRequestDTO.getInitialBalance());
         account.setCreatedAt(LocalDateTime.now());
         account.setStatus(AccountStatus.ACTIVE);
         Account savedAccount = accountRepository.save(account);
-        return accountMapper.toResponseDTO(savedAccount);
+        AccountResponseDTO accountResponseDTO = accountMapper.toResponseDTO(savedAccount);
+        accountResponseDTO.setUserId(savedAccount.getUser().getId());
+        return accountResponseDTO;
     }
 
     public List<AccountResponseDTO> getAllAccounts() {

@@ -13,7 +13,15 @@ public class UserResponseDTO {
     private int age;
     private Double monthlyIncome;
     private int creditScore;
+    private Double totalSolde;
 
+    public Double getTotalSolde() {
+        return totalSolde;
+    }
+
+    public void setTotalSolde(Double totalSolde) {
+        this.totalSolde = totalSolde;
+    }
     public Long getId() {
         return id;
     }

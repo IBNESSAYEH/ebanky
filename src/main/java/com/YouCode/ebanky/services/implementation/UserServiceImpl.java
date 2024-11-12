@@ -1,12 +1,14 @@
 package com.YouCode.ebanky.services.implementation;
 
 
+import com.YouCode.ebanky.entities.Account;
 import com.YouCode.ebanky.entities.User;
 import com.YouCode.ebanky.mappers.UserMapper;
 import com.YouCode.ebanky.repositories.UserRepository;
 import com.YouCode.ebanky.services.UserService;
 import com.YouCode.ebanky.shared.dtos.requests.UserRequestDTO;
 import com.YouCode.ebanky.shared.dtos.responses.UserResponseDTO;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +34,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream().map(userMapper::toResponseDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        return userMapper.toResponseDTO(user);
+        double totalSolde = user.getAccounts() == null ? 0.0 :
+                user.getAccounts().stream()
+                        .mapToDouble(Account::getBalance)
+                        .sum();
+        UserResponseDTO userResponseDTO =  userMapper.toResponseDTO(user);
+        userResponseDTO.setTotalSolde(totalSolde);
+        return userResponseDTO;
     }
 
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
@@ -43,6 +52,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userRequestDTO.getLastName());
         user.setEmail(userRequestDTO.getEmail());
         user.setAge(userRequestDTO.getAge());
+
         user.setMonthlyIncome(userRequestDTO.getMonthlyIncome());
         user.setCreditScore(userRequestDTO.getCreditScore());
         User updatedUser = userRepository.save(user);
