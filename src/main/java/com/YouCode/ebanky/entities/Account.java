@@ -26,11 +26,11 @@ public class Account {
     @JoinColumn(name = "users_id")
     private User user;
 
-//    @OneToMany(mappedBy = "sourceAccount")
-//    private List<Transaction> outgoingTransactions;
-//
-//    @OneToMany(mappedBy = "destinationAccount")
-//    private List<Transaction> incomingTransactions;
+    @OneToMany(mappedBy = "sourceAccount")
+    private List<Transaction> outgoingTransactions;
+
+    @OneToMany(mappedBy = "destinationAccount")
+    private List<Transaction> incomingTransactions;
 
     public String getAccountNumber() {
         return accountNumber;
@@ -50,17 +50,7 @@ public class Account {
 
 
 
-    public void deposit(Double amount) {
-        this.balance += amount;
-    }
 
-    public void withdraw(Double amount) {
-        if (this.balance >= amount) {
-            this.balance -= amount;
-        } else {
-            throw new IllegalStateException("Insufficient funds");
-        }
-    }
 
 
 
@@ -95,6 +85,22 @@ public class Account {
 
     public void setStatus(AccountStatus status) {
         this.status = status;
+    }
+
+    public List<Transaction> getIncomingTransactions() {
+        return incomingTransactions;
+    }
+
+    public void setIncomingTransactions(List<Transaction> incomingTransactions) {
+        this.incomingTransactions = incomingTransactions;
+    }
+
+    public List<Transaction> getOutgoingTransactions() {
+        return outgoingTransactions;
+    }
+
+    public void setOutgoingTransactions(List<Transaction> outgoingTransactions) {
+        this.outgoingTransactions = outgoingTransactions;
     }
 }
 

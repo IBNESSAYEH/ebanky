@@ -53,20 +53,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Account> accounts;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Invoice> invoices;
-//
-//    @OneToMany(mappedBy = "user")
-//    private List<Loan> loans;
+    @OneToMany(mappedBy = "user")
+    private List<Invoice> invoices;
 
-    public void register() {
-        return;
-    }
+    @OneToMany(mappedBy = "user")
+    private List<Loan> loans;
 
-    public boolean login() {
-
-        return false;
-    }
 
     public List<Account> getAccounts() {
         return accounts;
@@ -156,5 +148,29 @@ public class User {
 
     public void setCreditScore(int creditScore) {
         this.creditScore = creditScore;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans;
     }
 }

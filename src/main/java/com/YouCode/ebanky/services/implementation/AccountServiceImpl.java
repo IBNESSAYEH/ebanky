@@ -77,4 +77,9 @@ public class AccountServiceImpl implements AccountService {
         Account updatedAccount = accountRepository.save(account);
         return accountMapper.toResponseDTO(updatedAccount);
     }
+
+    @Override
+    public Account findByAccountNumber(String accountNumber) {
+            return accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Source account not found"));
+    }
 }

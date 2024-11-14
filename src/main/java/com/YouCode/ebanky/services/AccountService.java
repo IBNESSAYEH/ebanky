@@ -22,4 +22,5 @@ public interface AccountService {
     AccountResponseDTO blockAccount(Long id,AccountRequestDTO accountRequestDTO);
     AccountResponseDTO activeAccount(Long id,AccountRequestDTO accountRequestDTO);
 
+    Account findByAccountNumber(String accountNumber);
 }

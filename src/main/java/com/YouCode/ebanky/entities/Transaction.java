@@ -4,9 +4,14 @@ import com.YouCode.ebanky.entities.enums.TransactionStatus;
 import com.YouCode.ebanky.entities.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "transactions")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,19 +35,7 @@ public class Transaction {
 
     private boolean executed;
 
-    public void execute() {
-        if (!executed && status == TransactionStatus.ACCEPTED) {
-            sourceAccount.withdraw(amount);
-            destinationAccount.deposit(amount);
-            this.executed = true;
-        }
-    }
 
-    public void cancel() {
-        if (!executed) {
-            this.status = TransactionStatus.REFUSED;
-        } else {
-            throw new IllegalStateException("Cannot cancel executed transaction");
-        }
-    }
+
+
 }
