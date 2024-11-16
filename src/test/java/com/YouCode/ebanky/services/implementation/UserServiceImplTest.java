@@ -122,7 +122,7 @@ User user = new User();
         UserResponseDTO result = userService.updateUser(userId, userRequestDTO);
 
 
-        
+
         assertNotNull(result);
            assertEquals("UpdatedName", user.getFirstName());
         verify(userRepository, times(1)).findById(userId);

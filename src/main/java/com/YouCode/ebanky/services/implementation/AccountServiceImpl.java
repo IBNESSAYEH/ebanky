@@ -52,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponseDTO updateAccount(Long id, AccountRequestDTO accountRequestDTO) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
         account.setBalance(accountRequestDTO.getInitialBalance());
-        account.setAccount_number(accountRequestDTO.getAccountNumber());
+        account.setAccountNumber(accountRequestDTO.getAccountNumber());
         Account updatedAccount = accountRepository.save(account);
         return accountMapper.toResponseDTO(updatedAccount);
     }

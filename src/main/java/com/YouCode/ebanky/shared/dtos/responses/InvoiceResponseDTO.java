@@ -1,32 +1,11 @@
 package com.YouCode.ebanky.shared.dtos.responses;
 
-import java.time.LocalDateTime;
+import lombok.Data;
 
+@Data
 public class InvoiceResponseDTO {
     private Long id;
-
     private String amountDue;
-    private LocalDateTime dueDate;
-
-    public Long getId() {
-        return id;
-    }
-
-
-
-    public String getAmountDue() {
-        return amountDue;
-    }
-
-    public void setAmountDue(String amountDue) {
-        this.amountDue = amountDue;
-    }
-
-    public LocalDateTime getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDateTime dueDate) {
-        this.dueDate = dueDate;
-    }
+    private String dueDate;
+    private Long accountId;
 }

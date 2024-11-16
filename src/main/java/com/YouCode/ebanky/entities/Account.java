@@ -2,12 +2,13 @@ package com.YouCode.ebanky.entities;
 
 import com.YouCode.ebanky.entities.enums.AccountStatus;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "accounts")
-
+@Data
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,92 +16,26 @@ public class Account {
 
     @Column(unique = true)
     private String accountNumber;
+
     @Column(nullable = false)
     private Double balance;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "sourceAccount")
+    @OneToMany(mappedBy = "sourceAccount", cascade = CascadeType.ALL)
     private List<Transaction> outgoingTransactions;
 
-    @OneToMany(mappedBy = "destinationAccount")
+    @OneToMany(mappedBy = "destinationAccount", cascade = CascadeType.ALL)
     private List<Transaction> incomingTransactions;
 
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-
-
-
-
-
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getAccount_number() {
-        return accountNumber;
-    }
-
-    public void setAccount_number(String account_number) {
-        this.accountNumber = account_number;
-    }
-
-    public Double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
-
-
-    public AccountStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AccountStatus status) {
-        this.status = status;
-    }
-
-    public List<Transaction> getIncomingTransactions() {
-        return incomingTransactions;
-    }
-
-    public void setIncomingTransactions(List<Transaction> incomingTransactions) {
-        this.incomingTransactions = incomingTransactions;
-    }
-
-    public List<Transaction> getOutgoingTransactions() {
-        return outgoingTransactions;
-    }
-
-    public void setOutgoingTransactions(List<Transaction> outgoingTransactions) {
-        this.outgoingTransactions = outgoingTransactions;
-    }
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Invoice> invoices;
 }
-
