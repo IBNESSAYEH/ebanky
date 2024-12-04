@@ -2,10 +2,10 @@ package com.YouCode.ebanky.services.implementation;
 
 import com.YouCode.ebanky.entities.Loan;
 import com.YouCode.ebanky.repositories.LoanRepository;
-import com.YouCode.ebanky.mappers.LoanMapper;
 import com.YouCode.ebanky.shared.dtos.requests.LoanRequestDTO;
 import com.YouCode.ebanky.shared.dtos.responses.LoanResponseDTO;
 import com.YouCode.ebanky.services.LoanService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,16 +19,14 @@ public class LoanServiceImpl implements LoanService {
     private LoanRepository loanRepository;
 
     @Autowired
-    private LoanMapper loanMapper;
-
-
+    private ModelMapper modelMapper;
 
     @Override
     @Transactional
     public LoanResponseDTO createLoan(LoanRequestDTO loanRequestDTO) {
-        Loan loan = loanMapper.toEntity(loanRequestDTO);
+        Loan loan = modelMapper.map(loanRequestDTO, Loan.class);
         Loan savedLoan = loanRepository.save(loan);
-        return loanMapper.toResponseDTO(savedLoan);
+        return modelMapper.map(savedLoan, LoanResponseDTO.class);
     }
 
     @Override
@@ -38,6 +36,6 @@ public class LoanServiceImpl implements LoanService {
                 .orElseThrow(() -> new NoSuchElementException("Loan with ID " + loanId + " not found"));
         loan.setApproved(true);
         Loan approvedLoan = loanRepository.save(loan);
-        return loanMapper.toResponseDTO(approvedLoan);
+        return modelMapper.map(approvedLoan, LoanResponseDTO.class);
     }
 }

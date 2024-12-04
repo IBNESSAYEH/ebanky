@@ -1,8 +1,10 @@
 package com.YouCode.ebanky.shared.dtos.requests;
 
-
+import com.YouCode.ebanky.entities.enums.Role;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 
+@Data
 public class UserRequestDTO {
 
     @NotNull
@@ -19,72 +21,28 @@ public class UserRequestDTO {
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email should be valid")
     private String email;
+
     @NotNull
     @NotBlank(message = "Password cannot be blank")
-    @Size(min = 8, max = 50, message = "Password must be between 3 and 50 characters")
+    @Size(min = 8, max = 50, message = "Password must be between 8 and 50 characters")
     private String password;
 
     @NotNull
     @Min(value = 18, message = "Age must be at least 18")
     private int age;
+
+    @PositiveOrZero(message = "Monthly income must be a positive value")
     private Double monthlyIncome;
+
+    @Min(value = 0, message = "Credit score must be at least 0")
+    @Max(value = 850, message = "Credit score must be no more than 850")
     private int creditScore;
 
+    @NotNull(message = "Role cannot be null")
+    private Role role;
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Double getMonthlyIncome() {
-        return monthlyIncome;
-    }
-
-    public void setMonthlyIncome(Double monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
-    }
-
-    public int getCreditScore() {
-        return creditScore;
-    }
-
-    public void setCreditScore(int creditScore) {
-        this.creditScore = creditScore;
-    }
+    @NotNull
+    @NotBlank(message = "Username cannot be blank")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    private String username;
 }
-

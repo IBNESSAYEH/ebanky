@@ -1,14 +1,13 @@
 package com.YouCode.ebanky.services.implementation;
 
-
 import com.YouCode.ebanky.entities.Account;
 import com.YouCode.ebanky.entities.enums.AccountStatus;
-import com.YouCode.ebanky.mappers.AccountMapper;
 import com.YouCode.ebanky.repositories.AccountRepository;
 import com.YouCode.ebanky.repositories.UserRepository;
 import com.YouCode.ebanky.services.AccountService;
 import com.YouCode.ebanky.shared.dtos.requests.AccountRequestDTO;
 import com.YouCode.ebanky.shared.dtos.responses.AccountResponseDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService {
+
     @Autowired
     private AccountRepository accountRepository;
 
@@ -25,61 +25,85 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
 
     @Autowired
-    private AccountMapper accountMapper;
+    private ModelMapper modelMapper;
 
+    @Override
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO) {
-        Account account = accountMapper.toEntity(accountRequestDTO);
-        account.setUser(userRepository.findById(accountRequestDTO.getUserId()).orElseThrow(() -> new RuntimeException("User not found")));
 
+        Account account = modelMapper.map(accountRequestDTO, Account.class);
+
+        account.setUser(userRepository.findById(accountRequestDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found")));
         account.setBalance(accountRequestDTO.getInitialBalance());
         account.setCreatedAt(LocalDateTime.now());
         account.setStatus(AccountStatus.ACTIVE);
+
         Account savedAccount = accountRepository.save(account);
-        AccountResponseDTO accountResponseDTO = accountMapper.toResponseDTO(savedAccount);
-        accountResponseDTO.setUserId(savedAccount.getUser().getId());
-        return accountResponseDTO;
+        return modelMapper.map(savedAccount, AccountResponseDTO.class);
     }
 
+    @Override
     public List<AccountResponseDTO> getAllAccounts() {
-        return accountRepository.findAll().stream().map(accountMapper::toResponseDTO).collect(Collectors.toList());
+
+        return accountRepository.findAll()
+                .stream()
+                .map(account -> modelMapper.map(account, AccountResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
+    @Override
     public AccountResponseDTO getAccountById(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
-        return accountMapper.toResponseDTO(account);
+
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        return modelMapper.map(account, AccountResponseDTO.class);
     }
 
+    @Override
     public AccountResponseDTO updateAccount(Long id, AccountRequestDTO accountRequestDTO) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
         account.setBalance(accountRequestDTO.getInitialBalance());
         account.setAccountNumber(accountRequestDTO.getAccountNumber());
+
         Account updatedAccount = accountRepository.save(account);
-        return accountMapper.toResponseDTO(updatedAccount);
+        return modelMapper.map(updatedAccount, AccountResponseDTO.class);
     }
 
+    @Override
     public void deleteAccount(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
         accountRepository.delete(account);
     }
 
     @Override
-    public AccountResponseDTO blockAccount(Long id,AccountRequestDTO accountRequestDTO) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+    public AccountResponseDTO blockAccount(Long id, AccountRequestDTO accountRequestDTO) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
         account.setStatus(AccountStatus.BLOCKED);
+
         Account updatedAccount = accountRepository.save(account);
-        return accountMapper.toResponseDTO(updatedAccount);
+        return modelMapper.map(updatedAccount, AccountResponseDTO.class);
     }
 
     @Override
     public AccountResponseDTO activeAccount(Long id, AccountRequestDTO accountRequestDTO) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
         account.setStatus(AccountStatus.ACTIVE);
+
         Account updatedAccount = accountRepository.save(account);
-        return accountMapper.toResponseDTO(updatedAccount);
+        return modelMapper.map(updatedAccount, AccountResponseDTO.class);
     }
 
     @Override
     public Account findByAccountNumber(String accountNumber) {
-            return accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Source account not found"));
+
+        return accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
     }
 }

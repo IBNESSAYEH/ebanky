@@ -2,10 +2,10 @@ package com.YouCode.ebanky.services.implementation;
 
 import com.YouCode.ebanky.entities.Invoice;
 import com.YouCode.ebanky.repositories.InvoiceRepository;
-import com.YouCode.ebanky.mappers.InvoiceMapper;
 import com.YouCode.ebanky.shared.dtos.requests.InvoiceRequestDTO;
 import com.YouCode.ebanky.shared.dtos.responses.InvoiceResponseDTO;
 import com.YouCode.ebanky.services.InvoiceService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,27 +19,32 @@ public class InvoiceServiceImpl implements InvoiceService {
     private InvoiceRepository invoiceRepository;
 
     @Autowired
-    private InvoiceMapper invoiceMapper;
+    private ModelMapper modelMapper;
 
     @Override
     @Transactional
     public InvoiceResponseDTO createInvoice(InvoiceRequestDTO invoiceRequestDTO) {
-        Invoice invoice = invoiceMapper.toEntity(invoiceRequestDTO);
+
+        Invoice invoice = modelMapper.map(invoiceRequestDTO, Invoice.class);
+
         Invoice savedInvoice = invoiceRepository.save(invoice);
-        return invoiceMapper.toResponseDTO(savedInvoice);
+        return modelMapper.map(savedInvoice, InvoiceResponseDTO.class);
     }
 
     @Override
     public InvoiceResponseDTO getInvoice(Long id) {
+
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Invoice with ID " + id + " not found"));
-        return invoiceMapper.toResponseDTO(invoice);
+        return modelMapper.map(invoice, InvoiceResponseDTO.class);
     }
 
     @Override
     public void payInvoice(Long id) {
+
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Invoice with ID " + id + " not found"));
+
         if (!invoice.isPaid()) {
             invoice.pay();
             invoiceRepository.save(invoice);

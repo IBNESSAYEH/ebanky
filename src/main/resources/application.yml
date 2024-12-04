@@ -8,7 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     open-in-view: false
     show-sql: true
     properties:
@@ -18,6 +18,17 @@ spring:
     change-log: classpath:/db/changelog/app-changelog.xml
     default-schema: liquibase_db
 
+
+
+    #server:
+     # port: 8080
+
+    # Configuration de sécurité (optionnel)
+    #spring:
+     # security:
+       # user:
+         # name: admin
+         # password: adminpass
 
 
 

@@ -1,15 +1,15 @@
 package com.YouCode.ebanky.services.implementation;
 
-
 import com.YouCode.ebanky.entities.Account;
 import com.YouCode.ebanky.entities.User;
-import com.YouCode.ebanky.mappers.UserMapper;
 import com.YouCode.ebanky.repositories.UserRepository;
 import com.YouCode.ebanky.services.UserService;
 import com.YouCode.ebanky.shared.dtos.requests.UserRequestDTO;
 import com.YouCode.ebanky.shared.dtos.responses.UserResponseDTO;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,21 +17,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private UserMapper userMapper;
+    private ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
+    @Override
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
-        User user = userMapper.toEntity(userRequestDTO);
-        user.setEncryptedPassword("aaaaa");
+        User user = modelMapper.map(userRequestDTO, User.class);
+        user.setEncryptedPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+
+
         User savedUser = userRepository.save(user);
-        return userMapper.toResponseDTO(savedUser);
+        return modelMapper.map(savedUser, UserResponseDTO.class);
     }
 
     public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll().stream().map(userMapper::toResponseDTO).collect(Collectors.toList());
+        return userRepository.findAll().stream()
+                .map(user -> modelMapper.map(user, UserResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -41,7 +49,7 @@ public class UserServiceImpl implements UserService {
                 user.getAccounts().stream()
                         .mapToDouble(Account::getBalance)
                         .sum();
-        UserResponseDTO userResponseDTO =  userMapper.toResponseDTO(user);
+        UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
         userResponseDTO.setTotalSolde(totalSolde);
         return userResponseDTO;
     }
@@ -52,11 +60,10 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userRequestDTO.getLastName());
         user.setEmail(userRequestDTO.getEmail());
         user.setAge(userRequestDTO.getAge());
-
         user.setMonthlyIncome(userRequestDTO.getMonthlyIncome());
         user.setCreditScore(userRequestDTO.getCreditScore());
         User updatedUser = userRepository.save(user);
-        return userMapper.toResponseDTO(updatedUser);
+        return modelMapper.map(updatedUser, UserResponseDTO.class);
     }
 
     public void deleteUser(Long id) {
