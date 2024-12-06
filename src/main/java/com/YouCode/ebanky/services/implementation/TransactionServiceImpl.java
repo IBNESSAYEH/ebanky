@@ -80,7 +80,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new RuntimeException("Transaction not found with id: " + transactionId);
         }
 
-        if (!employee.getRoles().contains(Role.EMPLOYEE) && transaction.getStatus() != TransactionStatus.PENDING) {
+        if (transaction.getStatus() != TransactionStatus.PENDING) {
             return modelMapper.map(transaction, TransactionResponseDTO.class);
         }
 
@@ -114,7 +114,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new RuntimeException("Transaction not found with id: " + transactionId);
         }
 
-        if (employee.getRoles().contains(Role.EMPLOYEE) && transaction.getStatus() != TransactionStatus.PENDING) {
+        if ( transaction.getStatus() != TransactionStatus.PENDING) {
             return modelMapper.map(transaction, TransactionResponseDTO.class);
         }
 

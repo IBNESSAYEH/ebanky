@@ -33,9 +33,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false, length = 70, unique = true)
     private String email;
-
-    @Column(nullable = false)
-    private String encryptedPassword;
+//
+//    @Column(nullable = false)
+//    private String encryptedPassword;
 
     @Column(nullable = true)
     private String emailVerificationToken;
@@ -69,10 +69,10 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
+//    @Override
+//    public String getPassword() {
+//        return password;
+//    }
 
     @Override
     public String getUsername() {

@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         User user = modelMapper.map(userRequestDTO, User.class);
-        user.setEncryptedPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
 
 
         User savedUser = userRepository.save(user);
