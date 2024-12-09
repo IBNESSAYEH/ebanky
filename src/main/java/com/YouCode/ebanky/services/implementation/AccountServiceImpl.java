@@ -7,6 +7,8 @@ import com.YouCode.ebanky.repositories.UserRepository;
 import com.YouCode.ebanky.services.AccountService;
 import com.YouCode.ebanky.shared.dtos.requests.AccountRequestDTO;
 import com.YouCode.ebanky.shared.dtos.responses.AccountResponseDTO;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,35 +18,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private ModelMapper modelMapper;
 
     @Override
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO) {
-
         Account account = modelMapper.map(accountRequestDTO, Account.class);
-
         account.setUser(userRepository.findById(accountRequestDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found")));
         account.setBalance(accountRequestDTO.getInitialBalance());
         account.setCreatedAt(LocalDateTime.now());
         account.setStatus(AccountStatus.ACTIVE);
-
         Account savedAccount = accountRepository.save(account);
         return modelMapper.map(savedAccount, AccountResponseDTO.class);
     }
 
     @Override
     public List<AccountResponseDTO> getAllAccounts() {
-
         return accountRepository.findAll()
                 .stream()
                 .map(account -> modelMapper.map(account, AccountResponseDTO.class))
@@ -52,18 +48,25 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponseDTO getAccountById(Long id) {
-
+    public AccountResponseDTO getAccountById(Long id, String email) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        if (!account.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized access to this account");
+        }
+
         return modelMapper.map(account, AccountResponseDTO.class);
     }
 
     @Override
-    public AccountResponseDTO updateAccount(Long id, AccountRequestDTO accountRequestDTO) {
-
+    public AccountResponseDTO updateAccount(Long id, AccountRequestDTO accountRequestDTO, String email) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        if (!account.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized access to update this account");
+        }
 
         account.setBalance(accountRequestDTO.getInitialBalance());
         account.setAccountNumber(accountRequestDTO.getAccountNumber());
@@ -91,7 +94,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponseDTO activeAccount(Long id, AccountRequestDTO accountRequestDTO) {
-
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         account.setStatus(AccountStatus.ACTIVE);
@@ -102,7 +104,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account findByAccountNumber(String accountNumber) {
-
         return accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
     }

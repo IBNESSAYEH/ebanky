@@ -5,20 +5,22 @@ import com.YouCode.ebanky.repositories.LoanRepository;
 import com.YouCode.ebanky.shared.dtos.requests.LoanRequestDTO;
 import com.YouCode.ebanky.shared.dtos.responses.LoanResponseDTO;
 import com.YouCode.ebanky.services.LoanService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
 @Service
+@AllArgsConstructor
 public class LoanServiceImpl implements LoanService {
 
-    @Autowired
     private LoanRepository loanRepository;
 
-    @Autowired
     private ModelMapper modelMapper;
 
     @Override
@@ -34,8 +36,22 @@ public class LoanServiceImpl implements LoanService {
     public LoanResponseDTO approveLoan(Long loanId) {
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new NoSuchElementException("Loan with ID " + loanId + " not found"));
-        loan.setApproved(true);
-        Loan approvedLoan = loanRepository.save(loan);
-        return modelMapper.map(approvedLoan, LoanResponseDTO.class);
+
+        UserDetails authenticatedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (authenticatedUser != null) {
+            String userRole = authenticatedUser.getAuthorities().stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("");
+
+            if (userRole.equals("ROLE_ADMIN") || userRole.equals("ROLE_EMPLOYEE")) {
+                loan.setApproved(true);
+                Loan approvedLoan = loanRepository.save(loan);
+                return modelMapper.map(approvedLoan, LoanResponseDTO.class);
+            } else {
+                throw new SecurityException("You are not authorized to approve loans");
+            }
+        }
+        throw new SecurityException("User not authenticated");
     }
 }

@@ -19,14 +19,15 @@ public class JwtService {
 
     private static final String SECRET_KEY = "246710615c3ab78c1d97eb32695cb5c6182dadd7fde09590f8857529c309dabd";
 
-    public String extactUsername(String token) {
-    return extractClaim(token, Claims::getSubject);
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
+
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
@@ -43,9 +44,9 @@ public class JwtService {
 
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails){
-     final String username = extactUsername(token);
-     return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -68,5 +69,10 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public Long getUserIdFromEmail(String token) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get("userId", Long.class);
     }
 }
