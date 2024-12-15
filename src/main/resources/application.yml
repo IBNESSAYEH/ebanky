@@ -18,17 +18,20 @@ spring:
     change-log: classpath:/db/changelog/app-changelog.xml
     default-schema: liquibase_db
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/abdellatif
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+server:
+  port: 8081
 
-
-    #server:
-     # port: 8080
-
-    # Configuration de sécurité (optionnel)
-    #spring:
-     # security:
-       # user:
-         # name: admin
-         # password: adminpass
+jwt:
+  auth:
+    converter:
+      resource-id: ebanky-rest-api
+      principle-attribute: preferred_username
 
 
 

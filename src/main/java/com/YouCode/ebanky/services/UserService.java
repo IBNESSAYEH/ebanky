@@ -1,5 +1,6 @@
 package com.YouCode.ebanky.services;
 
+import com.YouCode.ebanky.auth.RegisterRequest;
 import com.YouCode.ebanky.entities.User;
 import com.YouCode.ebanky.shared.dtos.requests.UserRequestDTO;
 import com.YouCode.ebanky.shared.dtos.responses.UserResponseDTO;
@@ -19,4 +20,5 @@ public interface UserService {
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO);
 
     public void deleteUser(Long id);
+    User save(RegisterRequest registerRequest);
 }
