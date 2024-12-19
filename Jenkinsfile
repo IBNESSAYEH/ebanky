@@ -109,17 +109,17 @@ pipeline {
 
     post {
             success {
-                mail to: 'elhattabmohammedelarbi@gmail.com',
+                mail to: 'abdellatifibnessayeh@gmail.com',
                      subject: "Pipeline Success - eBankify",
                      body: "Le pipeline Jenkins s'est terminé avec succès !"
             }
             failure {
-                mail to: 'elhattabmohammedelarbi@gmail.com',
+                mail to: 'abdellatifibnessayeh@gmail.com',
                      subject: "Pipeline Failure - eBankify",
                      body: "Le pipeline Jenkins a échoué. Veuillez vérifier les logs."
             }
             unstable {
-                        mail to: 'elhattabmohammedelarbi@gmail.com',
+                        mail to: 'abdellatifibnessayeh@gmail.com',
                              subject: "Pipeline Unstable - eBankify",
                              body: "Le pipeline Jenkins est dans un état instable. Veuillez vérifier les logs et résoudre les tests échoués."
                     }
