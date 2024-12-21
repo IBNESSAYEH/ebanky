@@ -19,6 +19,9 @@
 		<java.version>17</java.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<lombok.version>1.18.30</lombok.version>
+
+		<java.version>17</java.version>
+		<sonar.login>squ_3e54c20925e97925f95fd4c3b14b0b3f0ad790e3</sonar.login>
 	</properties>
 
 
