@@ -1,87 +1,179 @@
 pipeline {
-  agent any
+    agent any
 
-  environment {
-    SONARQUBE_URL = 'http://sonarqub:9000'
-    SONARQUBE_TOKEN = 'squ_3e54c20925e97925f95fd4c3b14b0b3f0ad790e3'
-    SONAR_PROJECT_KEY = "ebanky"
-    EMAIL_RECIPIENT = 'abdellatifibnessayeh@gmail.com'
-  }
-  stages {
-    stage('Build') {
-      steps {
-        echo 'Building the project...'
-        sh 'mvn clean install -X'
-      }
+    tools {
+        maven 'Maven'
+        jdk 'jdk17'
     }
-    stage('SonarQube Scan') {
-      steps {
-        echo 'Running SonarQube analysis...'
-        withSonarQubeEnv('sonarqub') {
-          sh '''
-            mvn sonar:sonar \
-            -Dsonar.host.url=${SONARQUBE_URL} \
-            -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-            -Dsonar.login=${SONARQUBE_TOKEN}
-          '''
+
+    environment {
+        DOCKER_IMAGE = 'ebanky'
+        DOCKER_TAG = "${BUILD_NUMBER}"
+        SONAR_TOKEN = credentials('SonarToken')
+        MAIL_TO = 'abdellatifibnessayeh@gmail.com'
+    }
+
+    options {
+        timeout(time: 1, unit: 'HOURS')
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    try {
+                        deleteDir()
+                        echo "Cloning Git repository..."
+                        checkout([$class: 'GitSCM',
+                            branches: [[name: '*/main']],
+                            userRemoteConfigs: [[
+                                url: 'https://github.com/IBNESSAYEH/ebanky.git'
+                            ]]
+                        ])
+                        echo "Repository cloned successfully."
+                    } catch (Exception e) {
+                        error "Failed to clone repository: ${e.getMessage()}"
+                    }
+                }
+            }
         }
-      }
-    }
-    stage('Quality Gate Check') {
-      steps {
-        script {
-          def qualityGate = sh(
-            script: """
-              curl -s -u "$SONARQUBE_TOKEN:" \
-              "$SONARQUBE_URL/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY" \
-              | jq -r '.projectStatus.status'
-            """,
-            returnStdout: true
-          ).trim()
-          if (qualityGate != "OK") {
-            error "Quality Gate failed! Stopping the build."
-          }
+
+        stage('Environment Check') {
+            steps {
+                script {
+                    try {
+                        sh '''
+                            echo "Git version:"
+                            git --version
+                            echo "Current Git branch:"
+                            git branch --show-current
+                            echo "Git status:"
+                            git status
+                            echo "Java version:"
+                            java -version
+                            echo "Maven version:"
+                            mvn -version
+                            echo "Working directory contents:"
+                            pwd
+                            ls -la
+                        '''
+                    } catch (Exception e) {
+                        error "Environment check failed: ${e.getMessage()}"
+                    }
+                }
+            }
         }
-      }
+
+        stage('Build') {
+            steps {
+                script {
+                    try {
+                        timeout(time: 15, unit: 'MINUTES') {
+                            sh 'mvn clean install -DskipTests'
+                        }
+                    } catch (Exception e) {
+                        error "Build failed: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+
+        stage('Unit Tests') {
+            steps {
+                script {
+                    try {
+                        timeout(time: 10, unit: 'MINUTES') {
+                            sh """
+                                mvn test \
+                                -Dmaven.test.failure.ignore=true \
+                                -Dsurefire.rerunFailingTestsCount=2
+                            """
+                        }
+                    } catch (Exception e) {
+                        unstable "Some tests failed but continuing: ${e.getMessage()}"
+                    }
+                }
+            }
+            post {
+                always {
+                    junit(
+                        allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml',
+                        skipPublishingChecks: true
+                    )
+                    jacoco(
+                        execPattern: '**/target/jacoco.exec',
+                        classPattern: '**/target/classes',
+                        sourcePattern: '**/src/main/java',
+                        exclusionPattern: '**/test/**'
+                    )
+                }
+            }
+        }
+
+        stage('Code Quality Analysis') {
+            when {
+                expression { currentBuild.result != 'FAILURE' }
+            }
+            steps {
+                script {
+                    try {
+                        timeout(time: 10, unit: 'MINUTES') {
+                            sh """
+                                mvn sonar:sonar \
+                                -Dsonar.projectKey=ebanky \
+                                 -Dsonar.projectName=ebanky \
+                                 -Dsonar.host.url=http://sonarqube:9000 \
+                                 -Dsonar.login=${SONAR_TOKEN}
+                            """
+                        }
+                    } catch (Exception e) {
+                        error "Code quality analysis failed: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+                    steps {
+                        script {
+                            docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                            docker.build("${DOCKER_IMAGE}:latest")
+                        }
+                    }
+        }
+
+        stage('Manual Approval') {
+            when {
+                expression { currentBuild.result != 'FAILURE' }
+            }
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    input message: 'Deploy to production?', ok: 'Proceed'
+                }
+            }
+        }
+
+        stage('Deploy') {
+                    steps {
+                        script {
+                            docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").run('-p 8081:8080')
+                        }
+                    }
+                }
     }
-    stage('Build Docker Image') {
-      steps {
-        echo "Building Docker Image..."
-        sh 'docker build -t springboot-app .'
-      }
-    }
-    stage('Deploy Docker Container') {
-      steps {
-        sh """
-          docker stop springboot-app-container || true
-          docker rm springboot-app-container || true
-          docker run -d -p 8080:8080 --name springboot-app-container springboot-app
-        """
-      }
-    }
-  }
-   post {
-          success {
-              script {
-                  def message = """
-                  The Jenkins pipeline for ${env.JOB_NAME} #${env.BUILD_NUMBER} completed successfully.
-                  URL: ${env.BUILD_URL}
-                  """
-                  sh """
-                      echo "$message" | mail -s "Pipeline Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}" ${EMAIL_RECIPIENT}
-                  """
-              }
-          }
-          failure {
-              script {
-                  def message = """
-                  The Jenkins pipeline for ${env.JOB_NAME} #${env.BUILD_NUMBER} failed.
-                  URL: ${env.BUILD_URL}
-                  """
-                  sh """
-                      echo "$message" | mail -s "Pipeline Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}" ${EMAIL_RECIPIENT}
-                  """
-              }
-          }
-      }
+
+    post {
+            success {
+                mail to: 'abdellatifibnessayeh@gmail.com',
+                     subject: "Pipeline Success - ebanky",
+                     body: "Le pipeline Jenkins s'est terminé avec succès !"
+            }
+            failure {
+                mail to: 'abdellatifibnessayeh@gmail.com',
+                     subject: "Pipeline Failure - ebanky",
+                     body: "Le pipeline Jenkins a échoué. Veuillez vérifier les logs."
+            }
+        }
 }

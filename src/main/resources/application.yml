@@ -2,7 +2,7 @@ spring:
   application:
     name: ebanky
   datasource:
-    url: jdbc:postgresql://localhost:5433/ebanky
+    url: jdbc:postgresql://host.docker.internal:5433/ebanky
     username: abdo
     password: abdo654321
     driver-class-name: org.postgresql.Driver
