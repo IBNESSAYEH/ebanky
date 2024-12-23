@@ -103,10 +103,9 @@ pipeline {
                         skipPublishingChecks: true
                     )
                     jacoco(
-                        execPattern: '**/target/jacoco.exec',
-                        classPattern: '**/target/classes',
-                        sourcePattern: '**/src/main/java',
-                        exclusionPattern: '**/test/**'
+                        execPattern: 'target/jacoco.exec',
+                        classPattern: 'target/classes',
+                        sourcePattern: 'src/main/java'
                     )
                 }
             }
@@ -144,16 +143,7 @@ pipeline {
                     }
         }
 
-        stage('Manual Approval') {
-            when {
-                expression { currentBuild.result != 'FAILURE' }
-            }
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    input message: 'Deploy to production?', ok: 'Proceed'
-                }
-            }
-        }
+
 
         stage('Deploy') {
                     steps {
@@ -175,5 +165,10 @@ pipeline {
                      subject: "Pipeline Failure - ebanky",
                      body: "Le pipeline Jenkins a échoué. Veuillez vérifier les logs."
             }
+            aborted {
+                mail to: 'abdellatifibnessayeh@gmail.com',
+                      subject: "Pipeline Aborted - ebanky",
+                      body: "Le pipeline Jenkins a été interrompu manuellement ou automatiquement."
+                }
         }
 }
